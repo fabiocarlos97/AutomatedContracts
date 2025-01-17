@@ -2,9 +2,7 @@ from web3 import Web3
 import json
 import os
 from eth_typing import Address
-
-# Connect to Arbitrum Goerli
-w3 = Web3(Web3.HTTPProvider("YOUR_RPC_URL_HERE"))
+from utils import get_web3, load_abi
 
 # Contract addresses
 L2_MESSAGE_RECEIVER_ADDRESS = "0x2C0f43E5C92459F62C102517956A95E88E177e95"
@@ -12,14 +10,9 @@ WSTETH_ADDRESS = "0x6320cD32aA674d2898A68ec82e869385Fc5f7E2f"
 MOR_ADDRESS = "0x454AE850eE61a98BF16FABA3a73fb0dD02D75C40"
 
 
-# Load ABIs - you'll need to provide the path to your ABI files
-def load_abi(filename):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(current_dir, f"../artifacts/contracts/{filename}")) as f:
-        return json.load(f)["abi"]
-
-
 def main():
+    w3 = get_web3("arbitrum_goerli")
+
     # Load contract ABIs
     l2_token_receiver_abi = load_abi("L2TokenReceiver.sol/L2TokenReceiver.json")
     erc20_abi = load_abi("ERC20.sol/ERC20.json")
