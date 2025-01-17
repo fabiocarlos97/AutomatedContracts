@@ -1,9 +1,7 @@
 from web3 import Web3
 import json
 import os
-
-# Connect to local network
-w3 = Web3(Web3.HTTPProvider("http://localhost:8545"))
+from utils import get_web3, load_abi, impersonate_account, stop_impersonating
 
 # Contract addresses
 WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
@@ -11,18 +9,14 @@ IMPERSONATED_ADDRESS = "0x151c2b49CdEC10B150B2763dF3d1C00D70C90956"
 L2_MESSAGE_RECEIVER_ADDRESS = "0xd4a8ECcBe696295e68572A98b1aA70Aa9277d427"
 
 
-def load_abi(filename):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(current_dir, f"../artifacts/contracts/{filename}")) as f:
-        return json.load(f)["abi"]
-
-
 async def main():
+    w3 = get_web3("local")
+
     # Load contract ABI
     l2_message_receiver_abi = load_abi("L2MessageReceiver.sol/L2MessageReceiver.json")
 
     # Impersonate account (this requires unlocking the account in your local node)
-    w3.provider.make_request("hardhat_impersonateAccount", [IMPERSONATED_ADDRESS])
+    impersonate_account(w3, IMPERSONATED_ADDRESS)
 
     # Initialize contract
     l2_message_receiver = w3.eth.contract(
@@ -65,7 +59,7 @@ async def main():
     print(")")
 
     # Stop impersonating
-    w3.provider.make_request("hardhat_stopImpersonatingAccount", [IMPERSONATED_ADDRESS])
+    stop_impersonating(w3, IMPERSONATED_ADDRESS)
 
 
 if __name__ == "__main__":
