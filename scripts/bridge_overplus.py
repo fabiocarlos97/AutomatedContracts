@@ -13,7 +13,7 @@ def wei(amount: str) -> int:
 
 async def main():
     # Connect to local network
-    w3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
+    w3 = Web3(Web3.HTTPProvider('http://localhost:3000'))
     
     # Setup accounts
     owner_address = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
@@ -22,6 +22,8 @@ async def main():
     # Impersonate accounts (assuming using Hardhat network)
     w3.provider.make_request("hardhat_impersonateAccount", [owner_address])
     w3.provider.make_request("hardhat_impersonateAccount", [signer_address])
+    w3.provider.make_request("softhat_impersonateAccount", [signer_address])
+
     
     # Send some ETH to signer
     tx = {
